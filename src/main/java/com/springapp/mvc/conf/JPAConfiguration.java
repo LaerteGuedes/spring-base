@@ -31,7 +31,7 @@ import java.util.Properties;
  */
 @Configuration
 @EnableTransactionManagement
-@PropertySource({"classpath:resources/persistence.properties"})
+@PropertySource({"classpath:persistence.properties"})
 @ComponentScan({"com.springapp.mvc.repositories"})
 public class JPAConfiguration {
 
@@ -52,9 +52,9 @@ public class JPAConfiguration {
     public DataSource restDataSource() {
         BasicDataSource dataSource = new BasicDataSource();
         dataSource.setDriverClassName(env.getProperty("jdbc.driverClassName"));
-        dataSource.setUrl(env.getProperty("jdbc.url"));
-        dataSource.setUsername(env.getProperty("jdbc.user"));
-        dataSource.setPassword(env.getProperty("jdbc.pass"));
+        dataSource.setUrl(env.getProperty("url"));
+        dataSource.setUsername(env.getProperty("user"));
+        dataSource.setPassword(env.getProperty("pass"));
 
         return dataSource;
     }
