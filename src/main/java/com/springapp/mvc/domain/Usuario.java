@@ -19,6 +19,8 @@ public class Usuario implements Entidade{
 
     private String senha;
 
+    private String horaDoShow;
+
     public Long getId() {
         return id;
     }
@@ -45,5 +47,13 @@ public class Usuario implements Entidade{
 
     public void setSenha(String senha) {
         this.senha = senha;
+    }
+
+    public String getHoraDoShow() {
+        return horaDoShow;
+    }
+
+    public void setHoraDoShow(String horaDoShow) {
+        this.horaDoShow = horaDoShow;
     }
 }

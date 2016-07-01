@@ -5,23 +5,42 @@ import com.springapp.mvc.repositories.contracts.BaseRepository;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Repository;
+
+import javax.transaction.Transactional;
+import java.lang.reflect.ParameterizedType;
+import java.lang.reflect.Type;
 
 /**
  * Created by laerteguedes on 14/06/16.
  */
-abstract public class BaseRepositoryImpl<T extends Entidade> implements BaseRepository<T> {
+@Repository
+@Transactional
+public abstract class BaseRepositoryImpl<T extends Entidade> implements BaseRepository<T> {
 
-    public abstract Session getSession();
+    @Autowired
+    private SessionFactory sessionFactory;
+
+    protected Class<? extends T> domainType;
+
+    public BaseRepositoryImpl() {
+        Type t = getClass().getGenericSuperclass();
+        ParameterizedType pt = (ParameterizedType) t;
+        domainType = (Class) pt.getActualTypeArguments()[0];
+    }
+
+    protected Session currentSession(){
+        return sessionFactory.getCurrentSession();
+    }
 
     @Override
     public T save(T s) {
-        getSession().persist(s);
-        return s;
+        return null;
     }
 
     @Override
     public T findOne(Long id) {
-        return (T) getSession().load(Entidade.class,id);
+        return (T) currentSession().load(domainType,id);
     }
 
     @Override
@@ -36,6 +55,7 @@ abstract public class BaseRepositoryImpl<T extends Entidade> implements BaseRepo
 
     @Override
     public long count() {
+
         return 0;
     }
 
