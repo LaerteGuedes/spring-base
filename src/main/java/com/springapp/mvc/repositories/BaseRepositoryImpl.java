@@ -6,22 +6,40 @@ import org.hibernate.Session;
 import org.hibernate.SessionFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 
+import javax.transaction.Transactional;
+import java.lang.reflect.ParameterizedType;
+import java.lang.reflect.Type;
+
 /**
  * Created by laerteguedes on 14/06/16.
  */
-abstract public class BaseRepositoryImpl<T extends Entidade> implements BaseRepository<T> {
+@Transactional
+public abstract class BaseRepositoryImpl<T extends Entidade> implements BaseRepository<T> {
 
-    public abstract Session getSession();
+    @Autowired
+    private SessionFactory sessionFactory;
+
+    private Class<T> clazz;
+
+    public BaseRepositoryImpl() {
+        Type t = getClass().getGenericSuperclass();
+    }
+
+    protected final Session getCurrentSession(){
+        return sessionFactory.getCurrentSession();
+    }
 
     @Override
     public T save(T s) {
-        getSession().persist(s);
+        getCurrentSession().persist(s);
         return s;
     }
 
     @Override
     public T findOne(Long id) {
-        return (T) getSession().load(Entidade.class,id);
+        System.out.println(id);
+        System.out.println("Class: "+clazz);
+        return (T) getCurrentSession().get(clazz,id);
     }
 
     @Override

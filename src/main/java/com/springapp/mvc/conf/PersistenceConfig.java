@@ -15,6 +15,7 @@ import org.springframework.data.jpa.repository.config.EnableJpaRepositories;
 import org.springframework.jdbc.datasource.DriverManagerDataSource;
 import org.springframework.orm.hibernate4.HibernateTransactionManager;
 import org.springframework.orm.hibernate4.LocalSessionFactoryBean;
+import org.springframework.orm.hibernate4.LocalSessionFactoryBuilder;
 import org.springframework.orm.jpa.JpaTransactionManager;
 import org.springframework.orm.jpa.LocalContainerEntityManagerFactoryBean;
 import org.springframework.orm.jpa.vendor.HibernateJpaVendorAdapter;
@@ -31,30 +32,30 @@ import java.util.Properties;
  */
 @Configuration
 @EnableTransactionManagement
-@PropertySource({"classpath:resources/persistence.properties"})
-@ComponentScan({"com.springapp.mvc.repositories"})
-public class JPAConfiguration {
+@PropertySource({"classpath:persistence.properties"})
+@ComponentScan({"com.springapp.mvc.conf"})
+public class PersistenceConfig {
 
     @Autowired
     private Environment env;
 
     @Bean
-    public LocalSessionFactoryBean sessionFactory() {
+    public LocalSessionFactoryBean sessionFactory(DataSource dataSource) {
         LocalSessionFactoryBean sessionFactory = new LocalSessionFactoryBean();
-        sessionFactory.setDataSource(restDataSource());
-        sessionFactory.setPackagesToScan(new String[] { "com.springapp.mvc.domain" });
+        sessionFactory.setDataSource(getDataSource());
+        sessionFactory.setPackagesToScan(new String[] {"com.springapp.mvc.domain"});
         sessionFactory.setHibernateProperties(hibernateProperties());
 
         return sessionFactory;
     }
 
-    @Bean
-    public DataSource restDataSource() {
+    @Bean(name = "dataSource")
+    public DataSource getDataSource() {
         BasicDataSource dataSource = new BasicDataSource();
-        dataSource.setDriverClassName(env.getProperty("jdbc.driverClassName"));
-        dataSource.setUrl(env.getProperty("jdbc.url"));
-        dataSource.setUsername(env.getProperty("jdbc.user"));
-        dataSource.setPassword(env.getProperty("jdbc.pass"));
+        dataSource.setDriverClassName("com.mysql.jdbc.Driver");
+        dataSource.setUrl("jdbc:mysql://localhost:3306/base");
+        dataSource.setUsername("root");
+        dataSource.setPassword("rabbit");
 
         return dataSource;
     }
@@ -74,13 +75,12 @@ public class JPAConfiguration {
     }
 
     Properties hibernateProperties() {
-        return new Properties() {
-            {
-                setProperty("hibernate.hbm2ddl.auto", env.getProperty("hibernate.hbm2ddl.auto"));
-                setProperty("hibernate.dialect", env.getProperty("hibernate.dialect"));
-                setProperty("hibernate.globally_quoted_identifiers", "true");
-            }
-        };
+        Properties properties = new Properties();
+        properties.put("hibernate.show_sql", "true");
+        properties.put("hibernate.dialect", "org.hibernate.dialect.MySQLDialect");
+        properties.put("hibernate.hbm2ddl.auto", "update");
+        properties.put("hibernate.globally_quoted_identifiers", "true");
+        return properties;
     }
 
 }
