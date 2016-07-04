@@ -2,6 +2,7 @@ package com.springapp.mvc.controllers;
 
 import com.springapp.mvc.domain.Usuario;
 import com.springapp.mvc.repositories.contracts.UsuarioRepository;
+import com.springapp.mvc.services.contracts.UsuarioService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -21,13 +22,12 @@ import java.util.Arrays;
 public class HomeController {
 
     @Autowired
-    private UsuarioRepository usuarioRepository;
+    private UsuarioService usuarioService;
 
 
     @RequestMapping(method = RequestMethod.GET)
     public ResponseEntity test(){
-        Usuario u = usuarioRepository.findOne(1L);
-        System.out.println(u.getNome());
+        Usuario u = usuarioService.findOne(1L);
 
         return new ResponseEntity(Arrays.asList(u), HttpStatus.OK);
     }

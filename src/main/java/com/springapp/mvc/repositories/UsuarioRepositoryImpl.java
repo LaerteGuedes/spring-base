@@ -17,7 +17,4 @@ import javax.transaction.Transactional;
 @Transactional
 public class UsuarioRepositoryImpl extends BaseRepositoryImpl<Usuario> implements UsuarioRepository{
 
-    public UsuarioRepositoryImpl() {
-        setClazz(Usuario.class);
-    }
 }
